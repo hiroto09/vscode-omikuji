@@ -68,6 +68,5 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
     if (cursorTimer) {
         clearInterval(cursorTimer);
-        console.log('Cursor timer stopped');
     }
 }
