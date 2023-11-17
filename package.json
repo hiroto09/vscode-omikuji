@@ -22,7 +22,11 @@
       {
         "command": "vscode-Keys.showKeyCount",
         "title": "count"
-        }
+        },
+      {
+        "command": "extension.promptForName",
+        "title": "name"
+      }
     ]
   },
 

@@ -9,20 +9,43 @@ let isVsCodeActive = true; // VSCodeウィンドウがアクティブかどう�
 
 const activeEditor = vscode.window.activeTextEditor;
 
+
+async function promptForName() {
+    const name = await vscode.window.showInputBox({
+        prompt: 'Please enter your name',
+        placeHolder: 'Your Name'
+    });
+
+    if (name) {
+        vscode.window.showInformationMessage(`Hello, ${name}!`);
+    } else {
+        vscode.window.showWarningMessage('No name entered.');
+    }
+}
 export function activate(context: vscode.ExtensionContext) {
+    context.subscriptions.push(vscode.commands.registerCommand('extension.promptForName', promptForName));
+    
 	context.subscriptions.push(
         vscode.commands.registerCommand('vscode-Keys.Start', () => {
-    // ウィンドウのフォーカス状態が変化したときに呼び出されるイベント
+            const disposable = vscode.workspace.onWillSaveTextDocument((event) => {
+                const isCommandSPressed = event.reason === vscode.TextDocumentSaveReason.Manual; // Manualは手動保存の意味
+        
+                if (isCommandSPressed) {
+                    const seconds = (totalCursorTimeInMilliseconds).toFixed(2);
+                   
+                }
+            }
+            );
     vscode.window.onDidChangeWindowState((windowState) => {
-        isVsCodeActive = windowState.focused; // ウィンドウがアクティブかどうかを更新
+        isVsCodeActive = windowState.focused;
         if (!isVsCodeActive) {
-            // ウィンドウがアクティブでない場合、タイマーを停止
             if (cursorTimer) {
                 clearInterval(cursorTimer);
                 cursorTimer = undefined;
             }
         }
     });
+
 
     vscode.window.onDidChangeTextEditorSelection((e) => {
         if (e.textEditor && isVsCodeActive) {
@@ -36,6 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+
+
     vscode.window.onDidChangeActiveTextEditor(() => {
         if (cursorTimer && !isVsCodeActive) {
             clearInterval(cursorTimer);
@@ -43,9 +68,11 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+
+
     const onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument((event) => {
         const text = event.contentChanges[0]?.text;
-        if (/[a-zA-Z0-9]/.test(text)) {
+        if (/[a-z]/) {
             keyCount++;
         }
         if (text === '\n') {
@@ -70,3 +97,4 @@ export function deactivate() {
         clearInterval(cursorTimer);
     }
 }
+
